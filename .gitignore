@@ -6,6 +6,10 @@ __pycache__/
 # C extensions
 *.so
 
+tf_env/
+tf_env_clean/
+
+
 # Distribution / packaging
 .Python
 build/
