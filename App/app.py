@@ -1,74 +1,83 @@
-import streamlit as st
-import cv2
-import numpy as np
-from utils.predictor import load_model, predict_image
-from utils.tts import speak
+from flask import Flask, render_template, request, jsonify
+from utils.mediapipe_predictor import predict_from_image  # NEW
+from utils.tts import speak_from_text
+import os, cv2, tempfile
 from PIL import Image
-import tempfile
-import os
+import speech_recognition as sr
 
-# Load model and classes
-model = load_model("Saved_Models/model_07_13_2025_22_12_53.h5")
-classes = [
-    'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K',
-    'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V',
-    'W', 'X', 'Y', 'Z', 'nothing', 'space'
-]
+app = Flask(__name__)
 
-st.title("🤟 Sign Language Translator with TTS & Voice")
-st.sidebar.header("Upload Section")
+@app.route('/')
+def index():
+    return render_template('index.html')
 
-# === Image Upload ===
-img_file = st.sidebar.file_uploader("📷 Upload an Image", type=['jpg', 'png', 'jpeg'])
-if img_file:
-    image = Image.open(img_file)
-    st.image(image, caption="Uploaded Image", use_column_width=True)
-    img_array = np.array(image)
-    label, confidence = predict_image(model, img_array, classes)
-    st.success(f"Prediction: {label} ({confidence * 100:.2f}%)")
-    if st.button("🔊 Speak Prediction"):
-        speak(label)
+@app.route('/services')
+def services():
+    return render_template('services.html')
 
-# === Video Upload ===
-video_file = st.sidebar.file_uploader("📹 Upload a Video", type=["mp4", "avi"])
-if video_file:
-    st.video(video_file)
-    temp_vid = tempfile.NamedTemporaryFile(delete=False)
-    temp_vid.write(video_file.read())
+@app.route('/app', methods=['GET', 'POST'])
+def app_page():
+    prediction = None
+    sentence = None
+    audio_file = None
 
-    cap = cv2.VideoCapture(temp_vid.name)
-    predicted_sequence = []
+    if request.method == 'POST':
+        # === IMAGE PREDICTION ===
+        if 'image_file' in request.files:
+            img_file = request.files['image_file']
+            if img_file.filename != '':
+                prediction, confidence = predict_from_image(img_file)
+                audio_file = speak_from_text(prediction)
 
-    while cap.isOpened():
-        ret, frame = cap.read()
-        if not ret:
-            break
-        label, conf = predict_image(model, frame, classes)
-        if conf > 0.75:
-            predicted_sequence.append(label)
+        # === VIDEO PREDICTION ===
+        elif 'video_file' in request.files:
+            video_file = request.files['video_file']
+            if video_file.filename != '':
+                temp_vid = tempfile.NamedTemporaryFile(delete=False)
+                temp_vid.write(video_file.read())
+                temp_vid.close()
 
-    cap.release()
-    sentence = "".join(predicted_sequence)
-    st.success(f"Predicted Sentence: {sentence}")
-    if st.button("🔊 Speak Sentence"):
-        speak(sentence)
+                cap = cv2.VideoCapture(temp_vid.name)
+                predicted_sequence = []
 
-# === Live Webcam ===
-if st.checkbox("📷 Use Webcam"):
-    st.warning("Webcam support requires Streamlit WebRTC or local OpenCV loop.")
-    st.markdown("Run separately in `realtime_predict.py`")
+                while cap.isOpened():
+                    ret, frame = cap.read()
+                    if not ret:
+                        break
+                    label, conf = predict_from_image(frame)
+                    if conf > 0.75:
+                        predicted_sequence.append(label)
 
-# === Voice-to-Text ===
-if st.button("🎙️ Speak to Text"):
-    import speech_recognition as sr
-    recognizer = sr.Recognizer()
-    mic = sr.Microphone()
+                cap.release()
+                os.remove(temp_vid.name)
+                sentence = ''.join(predicted_sequence)
+                audio_file = speak_from_text(sentence)
 
-    with mic as source:
-        st.info("🎤 Listening...")
-        audio = recognizer.listen(source, timeout=5)
-        try:
-            transcript = recognizer.recognize_google(audio)
-            st.success(f"📝 You said: {transcript}")
-        except:
-            st.error("❌ Couldn't recognize your voice. Try again.")
+        # === VOICE TO TEXT ===
+        elif request.form.get('mic_input') == 'true':
+            recognizer = sr.Recognizer()
+            with sr.Microphone() as source:
+                try:
+                    audio = recognizer.listen(source, timeout=5)
+                    prediction = recognizer.recognize_google(audio)
+                    audio_file = speak_from_text(prediction)
+                except:
+                    prediction = "Couldn't recognize voice"
+
+        # === TEXT TO SPEECH ===
+        elif 'tts_input' in request.form:
+            text = request.form.get('tts_input')
+            if text:
+                audio_file = speak_from_text(text)
+                prediction = text
+
+    return render_template('app.html', prediction=prediction, sentence=sentence, audio_file=audio_file)
+
+@app.route('/live_predict', methods=['POST'])
+def live_predict():
+    img_file = request.files['image_file']
+    label, conf = predict_from_image(img_file)
+    return jsonify({"label": label, "confidence": conf})
+
+if __name__ == '__main__':
+    app.run(debug=True)

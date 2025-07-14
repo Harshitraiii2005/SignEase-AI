@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>SignEase AI</title>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Outfit', sans-serif;
+      background-color: #0f0f0f;
+      color: #ffffff;
+      overflow-x: hidden;
+    }
+
+    a { text-decoration: none; color: inherit; }
+
+    .btn-primary {
+      background: linear-gradient(to right, #00c6ff, #0072ff);
+      padding: 12px 28px;
+      border: none;
+      border-radius: 10px;
+      color: white;
+      font-weight: 600;
+      transition: all 0.3s ease;
+    }
+
+    .btn-primary:hover {
+      background: linear-gradient(to right, #0072ff, #00c6ff);
+    }
+
+    .hero {
+      height: 100vh;
+      background: url('/static/assets/hand-gesture.gif') center/cover no-repeat;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 0 20px;
+      position: relative;
+    }
+
+    .hero-overlay {
+      position: absolute;
+      inset: 0;
+      background-color: rgba(0, 0, 0, 0.65);
+      z-index: 0;
+    }
+
+    .content-center {
+      position: relative;
+      z-index: 1;
+    }
+
+    .app-title {
+      font-size: 4rem;
+      background: linear-gradient(to right, #00c6ff, #0072ff);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      font-weight: 700;
+    }
+
+    .tagline {
+      font-size: 1.4rem;
+      color: #ccc;
+      margin: 20px 0 30px;
+    }
+
+    .section {
+      padding: 80px 20px;
+      max-width: 1100px;
+      margin: auto;
+    }
+
+    .centered {
+      text-align: center;
+    }
+
+    h2.section-title {
+      font-size: 2.2rem;
+      margin-bottom: 25px;
+      color: #00c6ff;
+    }
+
+    .split {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 40px;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .card-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+      justify-content: center;
+    }
+
+    .card {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 14px;
+      padding: 20px;
+      text-align: center;
+      min-width: 140px;
+      max-width: 200px;
+      transition: all 0.3s ease;
+    }
+
+    .card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 12px 24px rgba(0, 198, 255, 0.15);
+    }
+
+    .feedback-form {
+      margin-top: 30px;
+      text-align: center;
+    }
+
+    .feedback-form input[type="text"] {
+      padding: 12px;
+      width: 70%;
+      max-width: 400px;
+      border-radius: 8px;
+      border: none;
+      outline: none;
+      margin-bottom: 15px;
+      font-size: 1rem;
+    }
+
+    .feedbacks {
+      margin-top: 30px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+      justify-content: center;
+    }
+
+    .feedback-box {
+      background: rgba(255, 255, 255, 0.05);
+      padding: 18px;
+      border-radius: 10px;
+      max-width: 320px;
+      font-size: 0.95rem;
+      color: #ddd;
+    }
+
+    footer.footer {
+      background-color: #121212;
+      text-align: center;
+      padding: 40px 20px;
+      color: #aaa;
+      border-top: 1px solid #222;
+    }
+
+    footer a {
+      color: #00c6ff;
+      margin: 0 8px;
+      font-weight: 600;
+    }
+
+    .social-icons img {
+      height: 26px;
+      margin: 0 10px;
+      vertical-align: middle;
+    }
+
+    @media (max-width: 768px) {
+      .app-title { font-size: 2.8rem; }
+      .split { flex-direction: column; text-align: center; }
+    }
+  </style>
+</head>
+
+<body>
+  <!-- Hero -->
+  <section class="hero">
+    <div class="hero-overlay"></div>
+    <div class="content-center">
+      <h1 class="app-title">SignEase AI</h1>
+      <p class="tagline">Empowering Communication Beyond Barriers</p>
+      <a href="/services" class="btn-primary">Let’s Start →</a>
+    </div>
+  </section>
+
+  <!-- Why We Created This -->
+  <section class="section">
+    <div class="centered" style="max-width: 800px; margin: auto;">
+      <h2 class="section-title">Why We Created This</h2>
+      <div style="font-size: 1.05rem; color: #ccc; line-height: 1.8;">
+        <p>We believe everyone deserves to be heard. <strong>SignEase AI</strong> bridges communication gaps through real-time sign language interpretation, speech conversion, and assistive AI technologies.</p>
+        <p>Our mission is to empower the hearing and speech-impaired community using intuitive, inclusive, and accessible tools powered by AI.</p>
+      </div>
+      <div style="margin-top: 35px;">
+        <a href="/app" class="btn-primary">Try the App ➔</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- MLOps & Deployment Stack -->
+  <section class="section">
+    <h2 class="section-title centered">MLOps Engineer Stack</h2>
+    <div class="card-list">
+      <div class="card">CI/CD – GitHub Actions</div>
+      <div class="card">Docker & Containerization</div>
+      <div class="card">Model Monitoring</div>
+      <div class="card">FastAPI Deployment</div>
+      <div class="card">Model Versioning</div>
+      <div class="card">Streamlit/Flask UI</div>
+    </div>
+  </section>
+
+  <!-- ML Tech Stack -->
+  <section class="section">
+    <h2 class="section-title centered">AI & ML Tech Stack</h2>
+    <div class="card-list">
+      <div class="card">Python</div>
+      <div class="card">TensorFlow</div>
+      <div class="card">MediaPipe</div>
+      <div class="card">OpenCV</div>
+      <div class="card">SpeechRecognition</div>
+      <div class="card">Pyttsx3</div>
+    </div>
+  </section>
+
+  <!-- Feedback Section -->
+  <section class="section">
+    <h2 class="section-title centered">What People Say</h2>
+
+    <div class="feedbacks">
+      <div class="feedback-box">“This app gave my sister a new voice. Thank you for making this accessible!”</div>
+      <div class="feedback-box">“So intuitive and easy to use. Feels futuristic!”</div>
+      <div class="feedback-box">“The real-time sign recognition is magical. Great job!”</div>
+    </div>
+
+    <div class="feedback-form">
+      <form action="#" method="post">
+        <input type="text" name="user_feedback" placeholder="Your thoughts about SignEase AI..." required />
+        <br>
+        <button type="submit" class="btn-primary">Submit Feedback</button>
+      </form>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <p>Send me feedback or queries → <a href="mailto:harshitrai@xyz.com">upharshi2005@gmail.com</a></p>
+    <div class="social-icons">
+      <a href="https://github.com/harshit-ai" target="_blank">
+        <img src="/static/assets/github.svg" alt="GitHub" />
+      </a>
+      <a href="https://linkedin.com/in/harshit-ai" target="_blank">
+        <img src="/static/assets/linkedin.svg" alt="LinkedIn" />
+      </a>
+    </div>
+    <p style="margin-top: 10px;">&copy; 2025 Harshit Rai. All rights reserved.</p>
+  </footer>
+</body>
+</html>

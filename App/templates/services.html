@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SignEase AI - Services</title>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/static/styles.css">
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Outfit', sans-serif;
+      background: radial-gradient(ellipse at top left, #0f0f0f, #1a1a1a);
+      color: #ffffff;
+    }
+
+    header.header {
+      text-align: center;
+      padding: 80px 20px 40px;
+    }
+
+    header h1 {
+      font-size: 3rem;
+      background: linear-gradient(to right, #00c6ff, #0072ff);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      font-weight: 700;
+    }
+
+    .sub-text {
+      font-size: 1.1rem;
+      color: #bbb;
+      margin-top: 10px;
+    }
+
+    .services-section {
+      padding: 60px 20px;
+      display: flex;
+      justify-content: center;
+    }
+
+    .card-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 30px;
+      max-width: 1100px;
+      width: 100%;
+    }
+
+    .service-card {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 18px;
+      padding: 30px 25px;
+      text-align: center;
+      backdrop-filter: blur(12px);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+      transition: all 0.3s ease-in-out;
+    }
+
+    .service-card:hover {
+      transform: translateY(-10px);
+      box-shadow: 0 15px 35px rgba(0, 198, 255, 0.2);
+    }
+
+    .service-card h3 {
+      font-size: 1.4rem;
+      margin-bottom: 15px;
+      color: #00c6ff;
+    }
+
+    .service-card p {
+      font-size: 0.95rem;
+      color: #ccc;
+      margin-bottom: 20px;
+    }
+
+    .card-btn {
+      display: inline-block;
+      padding: 10px 20px;
+      background: linear-gradient(to right, #00c6ff, #0072ff);
+      color: white;
+      border-radius: 8px;
+      font-weight: 600;
+      text-decoration: none;
+      transition: background 0.3s ease;
+    }
+
+    .card-btn:hover {
+      background: linear-gradient(to right, #0072ff, #00c6ff);
+    }
+
+    footer.footer {
+      padding: 40px 20px;
+      text-align: center;
+      font-size: 0.95rem;
+      color: #999;
+      border-top: 1px solid #222;
+      margin-top: 60px;
+    }
+
+    .footer span {
+      color: red;
+    }
+
+    @media (max-width: 768px) {
+      header h1 {
+        font-size: 2.2rem;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <header class="header">
+    <h1>Explore Our Services</h1>
+    <p class="sub-text">Bridging Communication for Everyone</p>
+  </header>
+
+  <section class="services-section">
+    <div class="card-container">
+      <div class="service-card">
+        <h3>Image to Sign Detection</h3>
+        <p>Upload an image and let our AI recognize the sign language instantly.</p>
+        <a href="app.html#image" class="card-btn">Go to Image Recognition</a>
+      </div>
+
+      <div class="service-card">
+        <h3>Video Sign Translation</h3>
+        <p>Upload videos and convert sign gestures into sentences in real time.</p>
+        <a href="app.html#video" class="card-btn">Go to Video Translation</a>
+      </div>
+
+      <div class="service-card">
+        <h3>Voice to Text Assistant</h3>
+        <p>Talk to the assistant and convert your voice into text for the hearing impaired.</p>
+        <a href="app.html#voice" class="card-btn">Go to Voice-to-Text</a>
+      </div>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <p>&copy; 2025 SignEase AI | Made with <span>❤️</span> by Harshit Rai</p>
+  </footer>
+
+</body>
+</html>

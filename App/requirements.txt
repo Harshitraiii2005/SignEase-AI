@@ -1,4 +1,6 @@
-streamlit
-numpy
+Flask
 opencv-python
+numpy
 tensorflow
+pyttsx3
+speechrecognition

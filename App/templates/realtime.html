@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Live Sign Detection</title>
+    <style>
+        body { background-color: #0f0f0f; color: white; text-align: center; }
+        video { border-radius: 20px; border: 5px solid #4CAF50; }
+        button {
+            margin-top: 20px;
+            padding: 10px 20px;
+            background: #00bfa6;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 18px;
+        }
+    </style>
+</head>
+<body>
+    <h1>📸 Live ASL Sign Detection</h1>
+    <img src="{{ url_for('video_feed') }}" width="700" height="500">
+    <br>
+    <form method="POST" action="/speak_prediction">
+        <button type="button" onclick="speakPrediction()">🔊 Speak Prediction</button>
+    </form>
+
+    <script>
+        function speakPrediction() {
+            fetch('/speak_prediction', {
+                method: 'POST'
+            }).then(res => res.json()).then(data => {
+                const audio = new Audio(data.audio_path);
+                audio.play();
+            });
+        }
+    </script>
+</body>
+</html>

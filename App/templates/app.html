@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SignEase AI | App</title>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/static/style.css" />
+  <script src="/static/predictions.js" defer></script>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Outfit', sans-serif;
+      background: radial-gradient(ellipse at top left, #0f0f0f, #1a1a1a);
+      color: #fff;
+      padding-bottom: 100px;
+    }
+
+    header.app-header {
+      text-align: center;
+      padding: 60px 20px 40px;
+    }
+
+    .title {
+      font-size: 3rem;
+      background: linear-gradient(to right, #00c6ff, #0072ff);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      font-weight: 700;
+    }
+
+    .subtitle {
+      color: #bbb;
+      font-size: 1.1rem;
+      margin-top: 10px;
+    }
+
+    main.app-main {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 30px 20px;
+      display: grid;
+      gap: 40px;
+    }
+
+    .app-section {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 20px;
+      padding: 30px 25px;
+      backdrop-filter: blur(12px);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+      transition: all 0.3s ease;
+    }
+
+    .app-section:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 15px 30px rgba(0, 198, 255, 0.1);
+    }
+
+    .app-section h2 {
+      font-size: 1.4rem;
+      margin-bottom: 20px;
+      color: #00c6ff;
+    }
+
+    input[type="file"],
+    input[type="text"] {
+      width: 100%;
+      padding: 12px;
+      margin-bottom: 15px;
+      border-radius: 10px;
+      border: none;
+      outline: none;
+      background-color: #1e1e1e;
+      color: #fff;
+      font-size: 0.95rem;
+    }
+
+    input[type="file"]::file-selector-button {
+      background-color: #0072ff;
+      color: white;
+      border: none;
+      padding: 8px 15px;
+      border-radius: 6px;
+      margin-right: 10px;
+      cursor: pointer;
+    }
+
+    button {
+      background: linear-gradient(to right, #00c6ff, #0072ff);
+      color: #fff;
+      padding: 12px 25px;
+      font-size: 1rem;
+      font-weight: 600;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+
+    button:hover {
+      background: linear-gradient(to right, #0072ff, #00c6ff);
+    }
+
+    video {
+      width: 100%;
+      max-height: 300px;
+      margin-top: 20px;
+      border-radius: 10px;
+    }
+
+    footer.footer {
+      text-align: center;
+      padding: 40px 20px;
+      color: #999;
+      font-size: 0.95rem;
+      border-top: 1px solid #222;
+      margin-top: 60px;
+    }
+
+    .footer strong {
+      color: #00c6ff;
+    }
+
+    @media (max-width: 768px) {
+      .title {
+        font-size: 2.2rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header class="app-header">
+    <h1 class="title">SignEase AI</h1>
+    <p class="subtitle">Real-time Sign Language Translator with TTS & Voice Assistant</p>
+  </header>
+
+  <main class="app-main">
+
+    <section class="app-section">
+      <h2>📸 Live Webcam Detection</h2>
+      <button onclick="startWebcam()">Start Webcam</button>
+      <video id="webcam" autoplay muted playsinline></video>
+      <p id="live-label">Prediction: -</p>
+    </section>
+
+    <section class="app-section">
+      <h2>📷 Upload an Image</h2>
+      <form action="/app" method="post" enctype="multipart/form-data">
+        <input type="file" name="image_file" accept="image/*" required />
+        <button type="submit">Predict</button>
+      </form>
+    </section>
+
+    <section class="app-section">
+      <h2>📹 Upload a Video</h2>
+      <form action="/app" method="post" enctype="multipart/form-data">
+        <input type="file" name="video_file" accept="video/*" required />
+        <button type="submit">Analyze</button>
+      </form>
+    </section>
+
+    <section class="app-section">
+      <h2>🎙️ Voice to Text</h2>
+      <form action="/app" method="post">
+        <input type="hidden" name="mic_input" value="true" />
+        <button type="submit">Speak Now</button>
+      </form>
+    </section>
+
+    <section class="app-section">
+      <h2>🔊 Text to Speech</h2>
+      <form action="/app" method="post">
+        <input type="text" name="tts_input" placeholder="Type something..." required />
+        <button type="submit">Speak</button>
+      </form>
+    </section>
+
+    {% if prediction %}
+    <section class="app-section">
+      <h2>🧠 Last Prediction</h2>
+      <p><strong>Prediction:</strong> {{ prediction }}</p>
+      {% if audio_file %}
+        <audio controls autoplay>
+          <source src="{{ url_for('static', filename=audio_file.split('static/')[-1]) }}" type="audio/mp3">
+          Your browser does not support the audio element.
+        </audio>
+      {% endif %}
+    </section>
+    {% endif %}
+
+    {% if sentence %}
+    <section class="app-section">
+      <h2>📽️ Video Output</h2>
+      <p><strong>Sentence:</strong> {{ sentence }}</p>
+    </section>
+    {% endif %}
+
+  </main>
+
+  <footer class="footer">
+    <p>Crafted with ❤️ by <strong>Harshit Rai</strong> | SignEase AI &copy; 2025</p>
+  </footer>
+</body>
+</html>
