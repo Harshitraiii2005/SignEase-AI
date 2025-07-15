@@ -9,7 +9,7 @@ tts_engine = pyttsx3.init()
 tts_engine.setProperty('rate', 150)  # Speed of speech
 
 # Load trained model
-model = tf.keras.models.load_model("Saved_Models/model_07_13_2025_22_12_53.h5")
+model = tf.keras.models.load_model
 
 # ASL classes (must match training labels)
 classes = [

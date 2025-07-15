@@ -8,26 +8,22 @@
   <link rel="stylesheet" href="/static/style.css" />
   <script src="/static/predictions.js" defer></script>
   <style>
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
-
+    * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
       font-family: 'Outfit', sans-serif;
-      background: radial-gradient(ellipse at top left, #0f0f0f, #1a1a1a);
-      color: #fff;
+      background: linear-gradient(145deg, #0f0f0f, #1a1a1a);
+      color: #ffffff;
       padding-bottom: 100px;
     }
 
     header.app-header {
       text-align: center;
-      padding: 60px 20px 40px;
+      padding: 80px 20px 40px;
+      background: linear-gradient(to right, #00c6ff33, #0072ff33);
     }
 
     .title {
-      font-size: 3rem;
+      font-size: 3.5rem;
       background: linear-gradient(to right, #00c6ff, #0072ff);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
@@ -36,92 +32,98 @@
 
     .subtitle {
       color: #bbb;
-      font-size: 1.1rem;
-      margin-top: 10px;
+      font-size: 1.2rem;
+      margin-top: 12px;
     }
 
     main.app-main {
-      max-width: 900px;
+      max-width: 1100px;
       margin: 0 auto;
-      padding: 30px 20px;
+      padding: 40px 20px;
       display: grid;
-      gap: 40px;
+      gap: 50px;
     }
 
     .app-section {
-      background: rgba(255, 255, 255, 0.05);
-      border: 1px solid rgba(255, 255, 255, 0.1);
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.08);
       border-radius: 20px;
-      padding: 30px 25px;
-      backdrop-filter: blur(12px);
-      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+      padding: 35px 30px;
+      backdrop-filter: blur(14px);
+      box-shadow: 0 12px 32px rgba(0, 0, 0, 0.4);
       transition: all 0.3s ease;
     }
 
     .app-section:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 15px 30px rgba(0, 198, 255, 0.1);
+      transform: translateY(-6px);
+      box-shadow: 0 18px 36px rgba(0, 198, 255, 0.15);
     }
 
     .app-section h2 {
-      font-size: 1.4rem;
+      font-size: 1.6rem;
       margin-bottom: 20px;
       color: #00c6ff;
     }
 
-    input[type="file"],
-    input[type="text"] {
+    input[type="file"], input[type="text"] {
       width: 100%;
-      padding: 12px;
-      margin-bottom: 15px;
+      padding: 14px;
+      margin-bottom: 18px;
       border-radius: 10px;
       border: none;
       outline: none;
-      background-color: #1e1e1e;
+      background-color: #1f1f1f;
       color: #fff;
-      font-size: 0.95rem;
+      font-size: 1rem;
     }
 
     input[type="file"]::file-selector-button {
       background-color: #0072ff;
       color: white;
       border: none;
-      padding: 8px 15px;
-      border-radius: 6px;
-      margin-right: 10px;
+      padding: 10px 16px;
+      border-radius: 8px;
+      margin-right: 12px;
       cursor: pointer;
     }
 
     button {
       background: linear-gradient(to right, #00c6ff, #0072ff);
       color: #fff;
-      padding: 12px 25px;
+      padding: 14px 28px;
       font-size: 1rem;
       font-weight: 600;
       border: none;
-      border-radius: 8px;
+      border-radius: 10px;
       cursor: pointer;
-      transition: background 0.3s ease;
+      transition: background 0.3s ease, transform 0.2s ease;
     }
 
     button:hover {
       background: linear-gradient(to right, #0072ff, #00c6ff);
+      transform: scale(1.05);
     }
 
     video {
       width: 100%;
-      max-height: 300px;
+      max-height: 320px;
       margin-top: 20px;
       border-radius: 10px;
+      border: 1px solid #222;
+    }
+
+    audio {
+      margin-top: 15px;
+      width: 100%;
     }
 
     footer.footer {
       text-align: center;
-      padding: 40px 20px;
+      padding: 50px 20px;
       color: #999;
       font-size: 0.95rem;
       border-top: 1px solid #222;
-      margin-top: 60px;
+      margin-top: 80px;
     }
 
     .footer strong {
@@ -129,9 +131,8 @@
     }
 
     @media (max-width: 768px) {
-      .title {
-        font-size: 2.2rem;
-      }
+      .title { font-size: 2.6rem; }
+      .subtitle { font-size: 1rem; }
     }
   </style>
 </head>
@@ -142,7 +143,6 @@
   </header>
 
   <main class="app-main">
-
     <section class="app-section">
       <h2>📸 Live Webcam Detection</h2>
       <button onclick="startWebcam()">Start Webcam</button>
@@ -201,7 +201,6 @@
       <p><strong>Sentence:</strong> {{ sentence }}</p>
     </section>
     {% endif %}
-
   </main>
 
   <footer class="footer">

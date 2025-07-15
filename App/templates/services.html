@@ -5,14 +5,19 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>SignEase AI - Services</title>
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/static/styles.css">
   <style>
-    body {
+    * {
       margin: 0;
       padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
       font-family: 'Outfit', sans-serif;
       background: radial-gradient(ellipse at top left, #0f0f0f, #1a1a1a);
       color: #ffffff;
+      line-height: 1.6;
+      overflow-x: hidden;
     }
 
     header.header {
@@ -21,11 +26,12 @@
     }
 
     header h1 {
-      font-size: 3rem;
+      font-size: 3.2rem;
       background: linear-gradient(to right, #00c6ff, #0072ff);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       font-weight: 700;
+      animation: fadeIn 1s ease-in-out;
     }
 
     .sub-text {
@@ -54,41 +60,45 @@
       border-radius: 18px;
       padding: 30px 25px;
       text-align: center;
-      backdrop-filter: blur(12px);
-      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+      backdrop-filter: blur(10px);
+      box-shadow: 0 10px 25px rgba(0, 198, 255, 0.08);
       transition: all 0.3s ease-in-out;
+      transform: scale(1);
     }
 
     .service-card:hover {
-      transform: translateY(-10px);
-      box-shadow: 0 15px 35px rgba(0, 198, 255, 0.2);
+      transform: translateY(-10px) scale(1.02);
+      box-shadow: 0 20px 40px rgba(0, 198, 255, 0.2);
     }
 
     .service-card h3 {
-      font-size: 1.4rem;
+      font-size: 1.5rem;
       margin-bottom: 15px;
       color: #00c6ff;
     }
 
     .service-card p {
-      font-size: 0.95rem;
+      font-size: 0.96rem;
       color: #ccc;
       margin-bottom: 20px;
     }
 
     .card-btn {
       display: inline-block;
-      padding: 10px 20px;
+      padding: 11px 24px;
       background: linear-gradient(to right, #00c6ff, #0072ff);
-      color: white;
-      border-radius: 8px;
+      color: #fff;
       font-weight: 600;
+      border-radius: 8px;
       text-decoration: none;
-      transition: background 0.3s ease;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 16px rgba(0, 198, 255, 0.15);
     }
 
     .card-btn:hover {
       background: linear-gradient(to right, #0072ff, #00c6ff);
+      box-shadow: 0 6px 24px rgba(0, 198, 255, 0.25);
+      transform: scale(1.05);
     }
 
     footer.footer {
@@ -97,7 +107,7 @@
       font-size: 0.95rem;
       color: #999;
       border-top: 1px solid #222;
-      margin-top: 60px;
+      margin-top: 80px;
     }
 
     .footer span {
@@ -106,8 +116,16 @@
 
     @media (max-width: 768px) {
       header h1 {
-        font-size: 2.2rem;
+        font-size: 2.4rem;
       }
+      .sub-text {
+        font-size: 1rem;
+      }
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
     }
   </style>
 </head>
@@ -121,21 +139,27 @@
   <section class="services-section">
     <div class="card-container">
       <div class="service-card">
-        <h3>Image to Sign Detection</h3>
+        <h3>🖼️ Image to Sign Detection</h3>
         <p>Upload an image and let our AI recognize the sign language instantly.</p>
-        <a href="app.html#image" class="card-btn">Go to Image Recognition</a>
+        <a href="/app#image" class="card-btn">Image Recognition</a>
       </div>
 
       <div class="service-card">
-        <h3>Video Sign Translation</h3>
-        <p>Upload videos and convert sign gestures into sentences in real time.</p>
-        <a href="app.html#video" class="card-btn">Go to Video Translation</a>
+        <h3>🎞️ Video Sign Translation</h3>
+        <p>Upload videos and convert sign gestures into accurate text or speech.</p>
+        <a href="/app#video" class="card-btn">Video Translation</a>
       </div>
 
       <div class="service-card">
-        <h3>Voice to Text Assistant</h3>
-        <p>Talk to the assistant and convert your voice into text for the hearing impaired.</p>
-        <a href="app.html#voice" class="card-btn">Go to Voice-to-Text</a>
+        <h3>🎙️ Voice to Text Assistant</h3>
+        <p>Speak freely—our assistant converts voice into live, readable text output.</p>
+        <a href="/app#voice" class="card-btn">Voice to Text</a>
+      </div>
+
+      <div class="service-card">
+        <h3>🔊 Text to Speech</h3>
+        <p>Type any message and listen to it spoken aloud with realistic voice synthesis.</p>
+        <a href="/app#tts" class="card-btn">Text to Speech</a>
       </div>
     </div>
   </section>
