@@ -1,6 +1,6 @@
 from flask import Flask, render_template, request, jsonify
-from utilss.mediapipe_predictor import predict_from_image  # NEW
-from utilss.tts import speak_from_text
+from utils.mediapipe_predictor import predict_from_image  # NEW
+from utils.tts import speak_from_text
 import os, cv2, tempfile
 from PIL import Image
 import speech_recognition as sr

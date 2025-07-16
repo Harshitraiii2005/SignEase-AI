@@ -1,23 +1,30 @@
-FROM python:3.10-slim
+# Base Python image
+FROM python:3.10
 
+# Set working directory inside container
+WORKDIR /app/App
 
-ENV PYTHONUNBUFFERED=1 \
-    PYTHONDONTWRITEBYTECODE=1
+# Install system dependencies (required by OpenCV, TFLite etc.)
+RUN apt-get update && apt-get install -y \
+    libgl1-mesa-glx \
+    libglib2.0-0 \
+    ffmpeg \
+    && rm -rf /var/lib/apt/lists/*
 
+# Copy requirements file and install Python packages
+COPY requirements.txt .
 
-WORKDIR /app
+RUN pip install --no-cache-dir --upgrade pip && \
+    pip install --default-timeout=100 --retries=10 --no-cache-dir -r requirements.txt
 
+# Copy entire project directory
+COPY . .
 
-COPY App/ /app/
-COPY Saved_Models/ /app/Saved_Models/
+# Set Python module path to include the App directory
+ENV PYTHONPATH=/app/App
 
-
-RUN pip install --no-cache-dir -r requirements.txt
-
+# Expose Flask default port
 EXPOSE 5000
 
-
-HEALTHCHECK CMD curl --fail http://localhost:5000 || exit 1
-
-# Start the app
+# Run the app
 CMD ["python", "app.py"]
