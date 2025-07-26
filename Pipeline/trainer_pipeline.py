@@ -1,62 +1,57 @@
-import sys
 import logging
-from Utils.Logger import configure_logger
-from Utils.Custom_exception import MyException
+import sys
+import numpy as np
 
-from Data_Trainer.data_loader import DataLoader
-from Data_Trainer.data_trainer import ModelTrainer
+# Configure logging format
+logging.basicConfig(level=logging.INFO, format='[%(levelname)s] %(message)s')
 
-from Entity.config_entity import DataLoaderConfig, ModelTrainerConfig
-from Entity.artifact_entity import DataTrainerArtifact
+# Import modules
+from Data_Ingestion.data_getter import GetData
+from Data_Ingestion.data_normalizer import DataNormalizer
+from Data_Ingestion.data_augmentation import DataAugmentation
+from Constants import *
+from Entity.config_entity import (
+    DataGetterConfig,
+    DataNormalizerConfig,
+    DataAugmentationConfig
+)
+def main():
+    try:
+        logging.info("🚦 Pipeline started")
 
-# Setup logger
-configure_logger()
+        # 1. Data Ingestion
+        getter = GetData()  # Pass config if needed
+        data_artifact = getter.get_data()
+        logging.info(f"✅ Data ingestion complete: {data_artifact.data_shape[0]} samples")
 
-class ModelTrainerPipeline:
-    def __init__(self):
-        try:
-            logging.info("🧠 Initializing ModelTrainerPipeline")
+        # 2. Data Normalization & Splitting
+        normalizer = DataNormalizer(test_size=0.2)
+        norm_artifact = normalizer.normalize_and_split(data_artifact.data)
+        logging.info(f"✅ Data normalized & split: {norm_artifact.x_train.shape[0]} train, {norm_artifact.x_test.shape[0]} test")
 
-            # Step 1: Initialize DataLoader
-            self.data_loader_config = DataLoaderConfig()
-            self.data_loader = DataLoader(self.data_loader_config)
+        # 3. Data Augmentation (training set only)
+        augment_config = DataAugmentationConfig()
+        augmenter = DataAugmentation(augment_config.augmentation_params)
+        aug_artifact = augmenter.augment_data(
+            norm_artifact.x_train,
+            norm_artifact.y_train,
+            norm_artifact.x_test,
+            norm_artifact.y_test
+        )
+        logging.info("✅ Data augmentation complete (train only)")
 
-            # Step 2: Initialize ModelTrainerConfig
-            self.model_trainer_config = ModelTrainerConfig()
+        # 4. Save Artifacts
+        np.save(X_TRAIN_PATH, aug_artifact.x_train_augmented)
+        np.save(Y_TRAIN_PATH, aug_artifact.y_train_augmented)
+        np.save(X_TEST_PATH, aug_artifact.x_test_augmented)
+        np.save(Y_TEST_PATH, aug_artifact.y_test_augmented)
+        logging.info(f"💾 Processed arrays saved in directory: {X_TRAIN_PATH.rsplit('/', 1)[0]}")
 
-        except Exception as e:
-            raise MyException("❌ Failed to initialize ModelTrainerPipeline", sys) from e
+        logging.info("🎉 Pipeline finished successfully! Ready for model training.")
 
-    def run(self) -> DataTrainerArtifact:
-        try:
-            logging.info("🚀 Starting the Model Training pipeline")
+    except Exception as e:
+        logging.error(f"❌ Pipeline failed: {str(e)}")
+        sys.exit(1)
 
-            # Step 1: Load processed data
-            data_loader_artifact = self.data_loader.load_data()
-
-            logging.info("✅ Data Loaded Successfully!")
-            logging.info(f"📊 Shapes:")
-            logging.info(f"🔹 x_train: {data_loader_artifact.x_train.shape}")
-            logging.info(f"🔹 y_train: {data_loader_artifact.y_train.shape}")
-            logging.info(f"🔹 x_test : {data_loader_artifact.x_test.shape}")
-            logging.info(f"🔹 y_test : {data_loader_artifact.y_test.shape}")
-
-            # Step 2: Prepare training artifact
-            dummy_artifact = DataTrainerArtifact(
-                data_loader_artifact=data_loader_artifact,
-                trained_model=None,       # will be set after training
-                model_path="",            # will be set after training
-                training_history={}       # will be set after training
-            )
-
-            # Step 3: Train model
-            model_trainer = ModelTrainer(dummy_artifact, self.model_trainer_config)
-            final_trainer_artifact = model_trainer.train_model()
-
-            logging.info("✅ Model Trainer Pipeline executed successfully!")
-            logging.info(f"📁 Model saved at: {final_trainer_artifact.model_path}")
-
-            return final_trainer_artifact
-
-        except Exception as e:
-            raise MyException("❌ Failed during ModelTrainerPipeline execution", sys) from e
+if __name__ == "__main__":
+    main()

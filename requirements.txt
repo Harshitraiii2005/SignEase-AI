@@ -1,6 +1,7 @@
-Flask
+flask
 opencv-python
+mediapipe==0.10.21
+pillow
+gtts
 SpeechRecognition
-numpy
-tensorflow-cpu==2.19.0
-Pillow
+tensorflow==2.13.0

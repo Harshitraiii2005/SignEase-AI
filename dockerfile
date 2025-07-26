@@ -1,30 +1,30 @@
-# Base Python image
 FROM python:3.10
 
-# Set working directory inside container
-WORKDIR /app/App
+# Set root working directory
+WORKDIR /app
 
-# Install system dependencies (required by OpenCV, TFLite etc.)
+# Install system dependencies
 RUN apt-get update && apt-get install -y \
     libgl1-mesa-glx \
     libglib2.0-0 \
     ffmpeg \
     && rm -rf /var/lib/apt/lists/*
 
-# Copy requirements file and install Python packages
-COPY requirements.txt .
-
-RUN pip install --no-cache-dir --upgrade pip && \
-    pip install --default-timeout=100 --retries=10 --no-cache-dir -r requirements.txt
-
-# Copy entire project directory
+# Copy entire project
 COPY . .
 
-# Set Python module path to include the App directory
+# Set Python module path to include App
 ENV PYTHONPATH=/app/App
 
-# Expose Flask default port
+# Upgrade pip & install dependencies
+RUN python -m pip install --upgrade pip && \
+    pip install --default-timeout=300 --retries=10 --no-cache-dir -r requirements.txt
+
+# Set working directory to where app.py is
+WORKDIR /app/App
+
+# Expose port
 EXPOSE 5000
 
-# Run the app
+# Run Flask app
 CMD ["python", "app.py"]

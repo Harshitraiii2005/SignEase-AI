@@ -1,0 +1,17 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: signease-ai-monitor
+  labels:
+    release: prometheus  # must match Prometheus Operator's release
+spec:
+  selector:
+    matchLabels:
+      app: signease-ai
+  endpoints:
+    - port: http
+      path: /metrics
+      interval: 15s
+  namespaceSelector:
+    matchNames:
+      - default  # or whatever namespace your app is in
