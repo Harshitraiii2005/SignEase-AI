@@ -2,8 +2,11 @@ import os
 import logging
 import numpy as np
 import sys
-from tensorflow.keras.models import Sequential
-from tensorflow.keras.layers import Dense, Conv2D, Flatten, MaxPooling2D, Dropout, BatchNormalization
+from tensorflow.keras.models import Model
+from tensorflow.keras.layers import (
+    Dense, Conv2D, Flatten, MaxPooling2D, Dropout, BatchNormalization,
+    Input, TimeDistributed, LSTM
+)
 from tensorflow.keras.callbacks import EarlyStopping, ModelCheckpoint
 from tensorflow.keras.preprocessing.image import ImageDataGenerator
 
@@ -22,36 +25,43 @@ class ModelTrainer:
 
     def _create_model(self):
         """
-        Create a CNN model architecture.
+        Create a CNN + LSTM model for image/video/text sequence classification.
+        Assumes input shape: (time_steps, height, width, channels)
         """
-        input_shape = self.data_loader_artifact.x_train.shape[1:]
+        input_shape = self.data_loader_artifact.x_train.shape[1:]  # (timesteps, h, w, c)
         num_classes = self.data_loader_artifact.y_train.shape[1]
 
-        model = Sequential()
-        model.add(Conv2D(32, (3, 3), activation='relu', input_shape=input_shape))
-        model.add(BatchNormalization())
-        model.add(MaxPooling2D(pool_size=(2, 2)))
+        input_layer = Input(shape=input_shape)
 
-        model.add(Conv2D(64, (3, 3), activation='relu'))
-        model.add(BatchNormalization())
-        model.add(MaxPooling2D(pool_size=(2, 2)))
+        # Apply CNN on each frame using TimeDistributed
+        cnn = TimeDistributed(Conv2D(32, (3, 3), activation='relu'))(input_layer)
+        cnn = TimeDistributed(BatchNormalization())(cnn)
+        cnn = TimeDistributed(MaxPooling2D((2, 2)))(cnn)
 
-        model.add(Conv2D(128, (3, 3), activation='relu'))
-        model.add(BatchNormalization())
-        model.add(MaxPooling2D(pool_size=(2, 2)))
+        cnn = TimeDistributed(Conv2D(64, (3, 3), activation='relu'))(cnn)
+        cnn = TimeDistributed(BatchNormalization())(cnn)
+        cnn = TimeDistributed(MaxPooling2D((2, 2)))(cnn)
 
-        model.add(Flatten())
-        model.add(Dense(256, activation='relu'))
-        model.add(Dropout(0.5))
-        model.add(Dense(num_classes, activation='softmax'))
+        cnn = TimeDistributed(Conv2D(128, (3, 3), activation='relu'))(cnn)
+        cnn = TimeDistributed(BatchNormalization())(cnn)
+        cnn = TimeDistributed(MaxPooling2D((2, 2)))(cnn)
 
+        cnn = TimeDistributed(Flatten())(cnn)
+
+        # LSTM for sequence modeling after CNN feature extraction
+        lstm = LSTM(128, return_sequences=False)(cnn)
+        dense = Dense(256, activation='relu')(lstm)
+        dropout = Dropout(0.5)(dense)
+        output = Dense(num_classes, activation='softmax')(dropout)
+
+        model = Model(inputs=input_layer, outputs=output)
         model.compile(optimizer='adam', loss='categorical_crossentropy', metrics=['accuracy'])
         model.summary()
         return model
 
     def train_model(self) -> DataTrainerArtifact:
         """
-        Train the CNN model and return a DataTrainerArtifact.
+        Train the CNN+LSTM model and return a DataTrainerArtifact.
         """
         try:
             logging.info("🚀 Starting model training...")
@@ -90,7 +100,6 @@ class ModelTrainer:
 
             logging.info(f"✅ Model training completed. Model saved at: {self.config.model_save_path}")
 
-            # Return full training artifact
             return DataTrainerArtifact(
                 data_loader_artifact=self.data_loader_artifact,
                 trained_model=self.model,
